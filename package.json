@@ -1,0 +1,19 @@
+{
+  "name": "color-names-viz-over-time",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Time-scrubbing GPU visualization of the color-names dataset with cosmos.gl",
+  "scripts": {
+    "data": "node build-data.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@cosmos.gl/graph": "^2.0.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

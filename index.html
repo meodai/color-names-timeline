@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>color-names · over time</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="graph"></div>
+
+    <div id="labels"></div>
+    <div id="tooltip" class="hidden"></div>
+
+    <header id="hud">
+      <h1>color&#8209;names <span>/ over time</span></h1>
+      <div class="readout">
+        <span id="date">—</span>
+        <span id="count">—</span>
+      </div>
+      <a id="commit" class="commit" target="_blank" rel="noopener">—</a>
+      <p id="hint" class="hint"></p>
+    </header>
+
+    <div id="model">
+      <select id="model-select"></select>
+      <div id="orbit" title="Drag to rotate the axis">
+        <svg id="orbit-svg" viewBox="0 0 100 100" aria-hidden="true">
+          <path id="arc-pb" class="back"></path>
+          <path id="arc-mb" class="back"></path>
+          <path id="arc-pf" class="front"></path>
+          <path id="arc-mf" class="front"></path>
+        </svg>
+        <div id="orbit-dot"></div>
+      </div>
+    </div>
+
+    <footer id="timeline">
+      <button id="play" aria-label="Play timeline">▶</button>
+      <div class="track">
+        <div id="ticks"></div>
+        <input id="scrub" type="range" min="0" max="1000" value="1000" step="1" />
+      </div>
+    </footer>
+
+    <div id="loading">building the color universe…</div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

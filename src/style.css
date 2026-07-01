@@ -1,0 +1,350 @@
+:root {
+  --bg: #000;
+  --fg: #fff;
+  --dim: #8a8a8a;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+#graph { position: fixed; inset: 0; }
+#graph canvas { display: block; }
+
+/* --- HUD ------------------------------------------------------------- */
+#hud {
+  position: fixed;
+  top: 22px;
+  left: 24px;
+  z-index: 5;
+  pointer-events: none;
+  max-width: 46ch;
+}
+
+#hud h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+#hud h1 span {
+  font-weight: 400;
+  color: var(--dim);
+}
+
+.readout {
+  margin-top: 14px;
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+}
+
+#date {
+  font-size: 44px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+#count {
+  font-size: 13px;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.commit {
+  pointer-events: auto;
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.commit:hover { text-decoration: underline; }
+
+.hint {
+  margin: 12px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--dim);
+  max-width: 40ch;
+}
+
+/* --- model dropdown -------------------------------------------------- */
+#model {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+#model label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+}
+
+#model-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--fg);
+  border-radius: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 8px 30px 8px 12px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--fg) 50%),
+    linear-gradient(135deg, var(--fg) 50%, transparent 50%);
+  background-position: right 13px center, right 8px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+#model-select:focus { outline: none; }
+#model-select option { background: var(--bg); color: var(--fg); }
+
+#orbit {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin-top: 8px;
+  border: 1px solid var(--fg);
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+
+#orbit:active { cursor: grabbing; }
+
+#orbit-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#orbit-svg path {
+  fill: none;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+#orbit-svg .front { stroke: rgba(255, 255, 255, 0.55); }
+#orbit-svg .back { stroke: rgba(255, 255, 255, 0.15); }
+
+#orbit-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--fg);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* --- timeline -------------------------------------------------------- */
+#timeline {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--bg);
+}
+
+#play {
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--fg);
+  width: 22px;
+  height: 34px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.track {
+  position: relative;
+  flex: 1;
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+#ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+#ticks .ctick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+#ticks .tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  background: var(--fg);
+}
+
+#ticks .tick span {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+#scrub {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  appearance: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+  outline: none;
+  cursor: pointer;
+}
+
+#scrub::-webkit-slider-thumb {
+  appearance: none;
+  width: 3px;
+  height: 26px;
+  border-radius: 0;
+  background: var(--fg);
+  cursor: grab;
+}
+
+#scrub::-moz-range-thumb {
+  width: 3px;
+  height: 26px;
+  border: none;
+  border-radius: 0;
+  background: var(--fg);
+  cursor: grab;
+}
+
+/* --- point labels + tooltip ----------------------------------------- */
+#labels {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.plabel {
+  position: absolute;
+  transform: translate(-50%, -160%);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 2px 7px;
+  border-radius: 0;
+  color: #fff;
+  background: #000;
+  will-change: transform, opacity;
+}
+
+.plabel .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  vertical-align: baseline;
+}
+
+.plabel::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 1px;
+  height: 9px;
+  background: var(--fg);
+  transform: translateX(-50%);
+}
+
+#tooltip {
+  position: fixed;
+  z-index: 8;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: 7px 10px;
+  border-radius: 0;
+  background: #000;
+  border: 1px solid var(--fg);
+  font-size: 12px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#tooltip .sw {
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+  flex: none;
+}
+
+#tooltip .meta { color: var(--dim); font-size: 11px; }
+
+.hidden { display: none !important; }
+
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--dim);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  transition: opacity 0.5s;
+}
