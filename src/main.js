@@ -209,10 +209,12 @@ async function boot() {
 
   const commitLink = $('#commit');
   const hintEl = $('#hint');
+  const countEl = $('#count');
   function updateReadout(day, alive) {
     const d = new Date(startMs + day * dayMs);
     $('#date').textContent = d.toLocaleString('en', { month: 'short', year: 'numeric' });
-    $('#count').textContent = alive.toLocaleString('en');
+    countEl.textContent = alive.toLocaleString('en');
+    countEl.style.left = (clamp(day, 0, totalDays) / totalDays) * 100 + '%'; // follow the scrub marker
     const c = commitAt(day);
     if (c && c.h) {
       commitLink.textContent = c.h;

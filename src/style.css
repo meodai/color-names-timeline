@@ -65,12 +65,12 @@ html, body {
 
 #count {
   position: absolute;
-  left: 50%;
+  left: 100%; /* updated per-frame to follow the scrub marker */
   bottom: 100%;
   transform: translateX(-50%);
   margin-bottom: 6px;
-  font-size: 13px;
-  color: var(--dim);
+  font-size: 11px;
+  color: var(--fg);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
   white-space: nowrap;
