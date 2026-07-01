@@ -50,7 +50,12 @@ async function boot() {
   const colorData = { rgb, hsl, oklab };
 
   // Declared early: the orbit-able layout builders read state.az / state.el.
-  const state = { day: totalDays, prevDay: totalDays, layout: 'cube', playing: false, az: DEFAULT_AZ, el: DEFAULT_EL };
+  const state = { day: totalDays, prevDay: totalDays, layout: 'cube', playing: false, speed: 1 / 3, az: DEFAULT_AZ, el: DEFAULT_EL };
+
+  // Playback speed toggle: 3× is the base (fastest) speed; 1×/2× are slower.
+  // Each click steps up and wraps: 1× -> 2× -> 3× -> 1×.
+  const SPEEDS = [{ m: 1 / 3, label: '1×' }, { m: 2 / 3, label: '2×' }, { m: 1, label: '3×' }];
+  let speedIdx = 0; // default 1×
 
   const layoutCache = new Map();
   const buildLayout = (id) => {
@@ -207,16 +212,17 @@ async function boot() {
   function updateReadout(day, alive) {
     const d = new Date(startMs + day * dayMs);
     $('#date').textContent = d.toLocaleString('en', { month: 'short', year: 'numeric' });
-    $('#count').textContent = alive.toLocaleString('en') + ' colors';
+    $('#count').textContent = alive.toLocaleString('en');
     const c = commitAt(day);
     if (c && c.h) {
       commitLink.textContent = c.h;
       commitLink.href = `${repo}/commit/${c.H}`;
-      commitLink.style.visibility = 'visible';
+      commitLink.style.display = 'inline';
+      hintEl.textContent = c.m ? ' → ' + c.m : '';
     } else {
-      commitLink.style.visibility = 'hidden';
+      commitLink.style.display = 'none';
+      hintEl.textContent = c && c.m ? c.m : '';
     }
-    hintEl.textContent = c && c.m ? c.m : '';
     scrub.value = String(Math.round(day));
   }
 
@@ -296,7 +302,7 @@ async function boot() {
     let dirtyTime = false;
 
     if (state.playing) {
-      state.day = clamp(state.day + dt * daysPerMs, 0, totalDays);
+      state.day = clamp(state.day + dt * daysPerMs * state.speed, 0, totalDays);
       dirtyTime = true;
       if (state.day >= totalDays) { state.playing = false; updatePlayBtn(); }
     }
@@ -343,6 +349,30 @@ async function boot() {
     updatePlayBtn();
     last = performance.now();
   });
+
+  const speedBtn = $('#speed');
+  speedBtn.addEventListener('click', () => {
+    speedIdx = (speedIdx + 1) % SPEEDS.length;
+    state.speed = SPEEDS[speedIdx].m;
+    speedBtn.textContent = SPEEDS[speedIdx].label;
+  });
+
+  // Sun/moon toggles the background: body class swaps the text/panel colors,
+  // graph.setConfig swaps the WebGL canvas background (and link tint to match).
+  // Default follows the OS/browser color-scheme preference.
+  const themeBtn = $('#theme');
+  let light = window.matchMedia?.('(prefers-color-scheme: light)')?.matches ?? false;
+  const applyTheme = () => {
+    document.body.classList.toggle('light', light);
+    themeBtn.textContent = light ? '☾' : '☀';
+    graph.setConfig({
+      backgroundColor: light ? '#ffffff' : '#000000',
+      linkDefaultColor: light ? [0, 0, 0, 0.85] : [1, 1, 1, 0.85],
+    });
+    graph.render(0);
+  };
+  themeBtn.addEventListener('click', () => { light = !light; applyTheme(); });
+  applyTheme();
 
   // layout dropdown
   const modelSelect = $('#model-select');
@@ -443,7 +473,7 @@ async function boot() {
     const born = new Date(startMs + p.b * dayMs).toLocaleString('en', { month: 'short', year: 'numeric' });
     const c = commits[p.c];
     const meta = c && c.g
-      ? `${p.h} · added ~${born} · pre-GitHub (Google Sheet, approx)`
+      ? `${p.h} · added ~${born} · pre-GitHub (Google Sheet)`
       : `${p.h} · added ${born}${c && c.h ? ' · ' + c.h : ''}`;
     tip.innerHTML = `<span class="sw" style="background:${p.h}"></span><span>${p.n}</span><span class="meta">${meta}</span>`;
     tip.style.left = mouseX + 'px';

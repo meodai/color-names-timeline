@@ -79,7 +79,7 @@ const dayIndex = (dateStr) => Math.round((new Date(dateStr).getTime() - startMs)
 const commits = commitsChrono.map((c) => {
   const hash = hashByDate.get(c.date) || { H: '', h: '', s: '' };
   const entry = { d: dayIndex(c.date), h: hash.h, H: hash.H, m: hash.s || '', a: c.added.length, r: c.removed.length };
-  if (c.pregit) { entry.g = 1; entry.m = 'pre-GitHub batch · Google Sheet (approx)'; }
+  if (c.pregit) { entry.g = 1; entry.m = 'pre-GitHub batch · Google Sheet'; }
   return entry;
 });
 

@@ -5,6 +5,12 @@
   font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
+body.light {
+  --bg: #fff;
+  --fg: #111;
+  --dim: #767676;
+}
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -58,16 +64,28 @@ html, body {
 }
 
 #count {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  margin-bottom: 6px;
   font-size: 13px;
   color: var(--dim);
   font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.meta {
+  margin: 12px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--dim);
+  max-width: 40ch;
 }
 
 .commit {
   pointer-events: auto;
-  display: inline-block;
-  margin-top: 12px;
-  font-size: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--fg);
   text-decoration: none;
@@ -76,11 +94,7 @@ html, body {
 .commit:hover { text-decoration: underline; }
 
 .hint {
-  margin: 12px 0 0;
-  font-size: 11px;
-  line-height: 1.5;
   color: var(--dim);
-  max-width: 40ch;
 }
 
 /* --- model dropdown -------------------------------------------------- */
@@ -152,8 +166,8 @@ html, body {
   vector-effect: non-scaling-stroke;
 }
 
-#orbit-svg .front { stroke: rgba(255, 255, 255, 0.55); }
-#orbit-svg .back { stroke: rgba(255, 255, 255, 0.15); }
+#orbit-svg .front { stroke: color-mix(in srgb, var(--fg) 55%, transparent); }
+#orbit-svg .back { stroke: color-mix(in srgb, var(--fg) 15%, transparent); }
 
 #orbit-dot {
   position: absolute;
@@ -197,6 +211,51 @@ html, body {
   padding: 0;
 }
 
+#speed {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--fg);
+  min-width: 26px;
+  height: 34px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+#speed:hover {
+  opacity: 1;
+}
+
+#theme {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--fg);
+  width: 26px;
+  height: 34px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  opacity: 0.7;
+}
+
+#theme:hover {
+  opacity: 1;
+}
+
 .track {
   position: relative;
   flex: 1;
@@ -217,14 +276,14 @@ html, body {
   width: 1px;
   height: 6px;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.28);
+  background: color-mix(in srgb, var(--fg) 28%, transparent);
 }
 
-/* pre-GitHub batches: synthetic dates -> dimmer + hatched to read "approximate" */
+/* pre-GitHub batches: synthetic dates -> dimmer + hatched */
 #ticks .ctick.pregit {
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.22) 0 2px,
+    color-mix(in srgb, var(--fg) 22%, transparent) 0 2px,
     transparent 2px 4px
   );
 }
@@ -254,7 +313,7 @@ html, body {
   width: 100%;
   appearance: none;
   height: 1px;
-  background: rgba(255, 255, 255, 0.5);
+  background: color-mix(in srgb, var(--fg) 50%, transparent);
   outline: none;
   cursor: pointer;
 }
@@ -294,8 +353,8 @@ html, body {
   white-space: nowrap;
   padding: 2px 7px;
   border-radius: 0;
-  color: #fff;
-  background: #000;
+  color: var(--fg);
+  background: var(--bg);
   will-change: transform, opacity;
 }
 
@@ -325,7 +384,7 @@ html, body {
   transform: translate(-50%, calc(-100% - 14px));
   padding: 7px 10px;
   border-radius: 0;
-  background: #000;
+  background: var(--bg);
   border: 1px solid var(--fg);
   font-size: 12px;
   white-space: nowrap;
