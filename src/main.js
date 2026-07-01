@@ -227,7 +227,7 @@ async function boot() {
     const maxA = Math.sqrt(Math.max(1, ...commits.map((c) => c.a || 0)));
     for (const c of commits) {
       const el = document.createElement('div');
-      el.className = 'ctick';
+      el.className = c.g ? 'ctick pregit' : 'ctick';
       el.style.left = (c.d / totalDays) * 100 + '%';
       el.style.height = (5 + (Math.sqrt(c.a || 0) / maxA) * 23).toFixed(1) + 'px';
       ticks.appendChild(el);
@@ -442,7 +442,9 @@ async function boot() {
     const p = points[i];
     const born = new Date(startMs + p.b * dayMs).toLocaleString('en', { month: 'short', year: 'numeric' });
     const c = commits[p.c];
-    const meta = `${p.h} · added ${born}${c && c.h ? ' · ' + c.h : ''}`;
+    const meta = c && c.g
+      ? `${p.h} · added ~${born} · pre-GitHub (Google Sheet, approx)`
+      : `${p.h} · added ${born}${c && c.h ? ' · ' + c.h : ''}`;
     tip.innerHTML = `<span class="sw" style="background:${p.h}"></span><span>${p.n}</span><span class="meta">${meta}</span>`;
     tip.style.left = mouseX + 'px';
     tip.style.top = mouseY + 'px';

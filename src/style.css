@@ -220,6 +220,15 @@ html, body {
   background: rgba(255, 255, 255, 0.28);
 }
 
+/* pre-GitHub batches: synthetic dates -> dimmer + hatched to read "approximate" */
+#ticks .ctick.pregit {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.22) 0 2px,
+    transparent 2px 4px
+  );
+}
+
 #ticks .tick {
   position: absolute;
   top: 50%;
