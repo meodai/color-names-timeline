@@ -208,6 +208,8 @@ async function boot() {
   }
 
   const commitLink = $('#commit');
+  const repoLink = $('#repo-link');
+  if (repoLink && repo) repoLink.href = repo;
   const hintEl = $('#hint');
   const countEl = $('#count');
   function updateReadout(day, alive) {

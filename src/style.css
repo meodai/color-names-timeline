@@ -49,6 +49,14 @@ html, body {
   color: var(--dim);
 }
 
+.repo-link {
+  pointer-events: auto;
+  color: inherit;
+  text-decoration: none;
+}
+
+.repo-link:hover { text-decoration: underline; }
+
 .readout {
   margin-top: 14px;
   display: flex;
@@ -177,6 +185,7 @@ html, body {
   height: 9px;
   border-radius: 50%;
   background: var(--fg);
+  border: 1px solid var(--bg);
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
